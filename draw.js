@@ -1,14 +1,17 @@
-var drain_img;  // Declare variable
-var bear_img;
-var mouse_img;
-var tiger;
-var mouse;
-var drain;
-var player1;
-var player2;
-var player3;
-var othersprite;
+// Declare Variables
+let drain_img;
+let bear_img;
+let mouse_img;
+let tiger;
+let mouse;
+let drain;
+let player1;
+let player2;
+let player3;
+let othersprite;
 let playerGroup;
+let endNextFrame;
+let gameState;
 
 //loading in all images for sprites
 function preload(){
@@ -18,7 +21,7 @@ function preload(){
   mouse_img = loadImage("assets/mouse.png");
 }
 
-//creates players
+//creates players function and make a player group
 function createPlayer(sprite){
   player = createSprite()
   player.addImage(sprite)
@@ -28,7 +31,8 @@ function createPlayer(sprite){
 
 //allows players to move, assigned to arrows keys, [W.A.S.D] keys and [O,K,L,;] keys
 function move(){
-  let speed = 0.1
+  let speed = 0.3
+  let maxSpeed = 4
   if (keyIsDown(LEFT_ARROW)) {
     player1.addSpeed(speed, 180);
 
@@ -65,22 +69,27 @@ function move(){
 
   if (keyIsDown(83)) {
     player2.addSpeed(speed, 90);
+
   }
+
   if (keyIsDown(75)) {
     player3.addSpeed(speed, 180);
+
   }
 
   if (keyIsDown(186)) {
     player3.addSpeed(speed, 0);
+
   }
 
   if (keyIsDown(79)) {
     player3.addSpeed(speed, 270);
+
   }
 
   if (keyIsDown(76)) {
-    player3.addSpeed(speed, 90);
-  }
+      player3.addSpeed(speed, 90);
+    }
 }
 
 //collision detection for wall boundaries
@@ -99,16 +108,31 @@ function canvasCollisionDetection(sprite){
   }
 }
 
+//checks for win (win condition)
+function winCondition(sprite){
+  if (playerGroup.length == 1) {
+    endNextFrame = 1
+
+  }
+}
+
 //collision against drain
 function drainCollision(sprite){
   sprite.remove()
+  winCondition()
 }
+
 
 //setup
 function setup() {
   canvas = createCanvas((window.innerWidth/1.5), (window.innerHeight/1.5 ));
   playerGroup = new Group();
+  gameState = 1
+  if (gameState == 1){
+    alert("Press OK to start the game")
+  }
   drain = createSprite(12,14);
+  drain.setCollider("circle",0,0,50,50)
   drain.addImage(drain_img);
   drain.scale = 0.5
   drain.immovable = true;
@@ -116,13 +140,13 @@ function setup() {
   drain.position.y = (canvas.height/2);
   player1 = createPlayer(tiger_img)
   player1.scale = 0.5
-  player1.position.x = 600
+  player1.position.x = 800
   player1.position.y = 110
   player1.friction = 0.035;
   player2 = createPlayer(bear_img)
   player2.scale = 0.5
-  player2.position.x = 120
-  player2.position.y = 140
+  player2.position.x = 800
+  player2.position.y = 350
   player2.friction = 0.035;
   player3 = createPlayer(mouse_img)
   player3.scale = 0.5
@@ -130,11 +154,20 @@ function setup() {
   player3.position.y = 140
   player3.friction = 0.02;
 
-} // creates
+}
 
 //draw
 function draw() {
-  background(035);
+  background(66, 66, 66);
+  if (endNextFrame == 1){
+    alert("Winner!!!!!")
+    endNextFrame = 0
+    gameState = 2
+    if (gameState == 2){
+    window.location.reload(true)
+
+  }
+}
   playerGroup.bounce(playerGroup);
   playerGroup.overlap(drain, drainCollision)
   move()
@@ -142,8 +175,11 @@ function draw() {
   canvasCollisionDetection(player2)
   canvasCollisionDetection(player3)
 
-  player1.attractionPoint(0.01,canvas.width/2,canvas.height/2)
-  player2.attractionPoint(0.01,canvas.width/2,canvas.height/2)
-  player3.attractionPoint(0.01,canvas.width/2,canvas.height/2)
+  player1.attractionPoint(0.06,canvas.width/2,canvas.height/2)
+  player2.attractionPoint(0.06,canvas.width/2,canvas.height/2)
+  player3.attractionPoint(0.06,canvas.width/2,canvas.height/2)
+
+  if (gameState != 2){
+    winCondition()}
   drawSprites();
 }
