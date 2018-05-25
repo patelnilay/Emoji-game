@@ -124,7 +124,7 @@ function drainCollision(sprite){
 function drainBigger(){
   countFrames += 1
   if (countFrames == 360){
-    console.log("vegana")
+    console.log("BIG")
     drain.scale += 0.5
     countFrames = 0
   }
