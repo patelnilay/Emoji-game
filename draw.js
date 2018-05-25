@@ -12,6 +12,7 @@ let othersprite;
 let playerGroup;
 let endNextFrame;
 let gameState;
+var countFrames = 0;
 
 //loading in all images for sprites
 function preload(){
@@ -35,7 +36,6 @@ function move(){
   let maxSpeed = 4
   if (keyIsDown(LEFT_ARROW)) {
     player1.addSpeed(speed, 180);
-
   }
 
   if (keyIsDown(RIGHT_ARROW)) {
@@ -112,7 +112,6 @@ function canvasCollisionDetection(sprite){
 function winCondition(sprite){
   if (playerGroup.length == 1) {
     endNextFrame = 1
-
   }
 }
 
@@ -122,6 +121,15 @@ function drainCollision(sprite){
   winCondition()
 }
 
+function drainBigger(){
+  countFrames += 1
+  if (countFrames == 360){
+    console.log("vegana")
+    drain.scale += 0.5
+    countFrames = 0
+  }
+
+}
 
 //setup
 function setup() {
@@ -159,8 +167,12 @@ function setup() {
 //draw
 function draw() {
   background(66, 66, 66);
+  //drainBigger()
+
+  drain.scale += millis() / 10000000;
+
   if (endNextFrame == 1){
-    alert("Winner!!!!!")
+    alert("Winner!!!!!" )
     endNextFrame = 0
     gameState = 2
     if (gameState == 2){
